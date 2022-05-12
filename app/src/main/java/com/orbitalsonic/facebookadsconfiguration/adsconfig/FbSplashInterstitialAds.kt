@@ -53,6 +53,7 @@ class FbSplashInterstitialAds(activity: Activity) {
                                     // Ad error callback
                                     isLoadingAd = false
                                     fbInterstitialOnCallBack?.onError()
+                                    mInterstitialAd = null
                                     Log.e(AD_TAG, "FB Interstitial ad failed to load: " + adError.errorMessage)
                                 }
 
