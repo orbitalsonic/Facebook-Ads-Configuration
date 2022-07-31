@@ -69,7 +69,7 @@ dependencies {
 //    implementation 'com.google.ads.mediation:facebook:6.8.0.0'
 
     //facebook ads
-    implementation 'com.facebook.android:audience-network-sdk:6.8.0'
+    implementation 'com.facebook.android:audience-network-sdk:6.11.0'
 
     // required to avoid crash on Android 12 API 31
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
