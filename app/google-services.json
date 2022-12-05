@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "420150405994",
+    "project_id": "fb-ads-config",
+    "storage_bucket": "fb-ads-config.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420150405994:android:c45774db40cc361706d313",
+        "android_client_info": {
+          "package_name": "com.orbitalsonic.facebookadsconfiguration"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "420150405994-ljppn83q8tsojom7ccrrc1r64fgmlqgc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtt8EDqKThUnl1RZ85cncbLtGhgRsRW8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "420150405994-ljppn83q8tsojom7ccrrc1r64fgmlqgc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -10,7 +11,7 @@ android {
     defaultConfig {
         applicationId "com.orbitalsonic.facebookadsconfiguration"
         minSdk 23
-        targetSdk 31
+        targetSdk 32
         versionCode 1
         versionName "1.0"
 
@@ -19,11 +20,11 @@ android {
 
     buildTypes {
         release {
-            resValue 'string', 'facebook_splash_native_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
-            resValue 'string', 'facebook_small_native_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
-            resValue 'string', 'facebook_banner_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
-            resValue 'string', 'facebook_interstitial_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
-            resValue 'string', 'facebook_interstitial_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_interstitial_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_interstitial_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_native_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_native_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_banner_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
 
             minifyEnabled true
             shrinkResources true
@@ -31,11 +32,11 @@ android {
         }
 
         debug {
-            resValue 'string', 'facebook_splash_native_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
-            resValue 'string', 'facebook_small_native_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
-            resValue 'string', 'facebook_banner_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
-            resValue 'string', 'facebook_interstitial_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
-            resValue 'string', 'facebook_interstitial_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_interstitial_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_interstitial_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_native_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_native_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_banner_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
 
 
             minifyEnabled false
@@ -70,6 +71,11 @@ dependencies {
 
     //facebook ads
     implementation 'com.facebook.android:audience-network-sdk:6.11.0'
+
+    // firebase configuration
+    implementation platform('com.google.firebase:firebase-bom:31.1.0')
+    // Firebase Remote Config (Kotlin)
+    implementation 'com.google.firebase:firebase-config-ktx'
 
     // required to avoid crash on Android 12 API 31
     implementation 'androidx.work:work-runtime-ktx:2.7.1'

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START xml_defaults -->
+<defaultsMap>
+<!--    Interstitial Ads Active Keys-->
+    <entry>
+        <key>is_splash_interstitial_active</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>is_main_interstitial_active</key>
+        <value>true</value>
+    </entry>
+
+
+<!--    Native Ads Active Keys-->
+    <entry>
+        <key>is_splash_native_active</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>is_main_native_active</key>
+        <value>true</value>
+    </entry>
+
+    <!--    Banner Ads Active Keys-->
+    <entry>
+        <key>is_main_banner_active</key>
+        <value>true</value>
+    </entry>
+
+    <!--    other Keys-->
+    <entry>
+        <key>remote_counter</key>
+        <value>2</value>
+    </entry>
+
+
+</defaultsMap>

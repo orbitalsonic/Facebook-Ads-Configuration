@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/adsBgColor"
     android:layout_height="85dp"
-    android:background="@drawable/bg_ad_outline_shape"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/data_panel"
@@ -65,7 +65,7 @@
             android:focusable="true"
             android:gravity="center"
             android:text="Facebook Advertiser Facebook Advertiser Facebook Advertiser "
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constrainedWidth="true"

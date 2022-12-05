@@ -1,86 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-    <androidx.constraintlayout.widget.ConstraintLayout
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".activities.MainActivity">
 
-        <LinearLayout
-            android:id="@+id/banner_ads_container_layout"
+        <FrameLayout
+            android:id="@+id/banner_place_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:orientation="vertical">
+            android:layout_alignParentTop="true"
+            >
 
-            <FrameLayout
-                android:id="@+id/banner_loading_layout"
+            <include
+                layout="@layout/loading_ad_banner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="5dp"
-                >
-                <include layout="@layout/loading_ad" />
-            </FrameLayout>
+                android:layout_height="70dp" />
+        </FrameLayout>
 
-            <LinearLayout
-                android:id="@+id/banner_place_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                />
-
-        </LinearLayout>
 
         <Button
             android:id="@+id/btnShow"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_marginHorizontal="30dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:lines="1"
-            android:text="Show Interstitial Ads"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textAllCaps="false"
+            android:text="Show Interstitial"
+            android:layout_marginHorizontal="30dp"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
             />
 
-        <LinearLayout
-            android:id="@+id/native_ads_container_layout"
+        <FrameLayout
+            android:id="@+id/native_place_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:orientation="vertical">
+            android:layout_alignParentBottom="true"
+            >
 
-            <FrameLayout
-                android:id="@+id/native_loading_layout"
+            <include
+                layout="@layout/loading_ad_banner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="5dp"
-                >
-                <include layout="@layout/loading_ad" />
-            </FrameLayout>
+                android:layout_height="70dp" />
+        </FrameLayout>
 
 
-            <com.facebook.ads.NativeAdLayout
-                android:id="@+id/fb_place_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@+id/simpleAds"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
-
-        </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 </layout>

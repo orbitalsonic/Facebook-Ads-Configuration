@@ -6,26 +6,26 @@ import com.facebook.ads.Ad
 import com.facebook.ads.AdError
 import com.facebook.ads.InterstitialAd
 import com.facebook.ads.InterstitialAdListener
-import com.orbitalsonic.facebookadsconfiguration.GeneralUtils.AD_TAG
-import com.orbitalsonic.facebookadsconfiguration.GeneralUtils.isInternetConnected
+import com.orbitalsonic.facebookadsconfiguration.utils.GeneralUtils.AD_TAG
 import com.orbitalsonic.facebookadsconfiguration.adsconfig.callbacks.FbInterstitialOnCallBack
 
 
-class FbInterstitialAds(activity: Activity) {
-    private var mInterstitialAd: InterstitialAd? = null
-    private val mActivity: Activity = activity
-    private var fbInterstitialOnCallBack: FbInterstitialOnCallBack? = null
+class FbInterstitialAds(private val mActivity: Activity) {
+    companion object{
+        private var mInterstitialAd: InterstitialAd? = null
+    }
+
     var isLoadingAd = false
 
-    // load show and load strategy
+    // load and show strategy
     fun loadInterstitialAd(
         fbInterstitialIds: String,
-        isRemoteConfigActive: Boolean,
+        isAdActive: Boolean,
         isAppPurchased: Boolean,
+        isInternetConnected:Boolean,
         mListener: FbInterstitialOnCallBack
     ) {
-        fbInterstitialOnCallBack = mListener
-        if (isInternetConnected(mActivity) && !isAppPurchased && isRemoteConfigActive) {
+        if (isInternetConnected && !isAppPurchased && isAdActive) {
             if (mInterstitialAd == null && !isLoadingAd) {
                 isLoadingAd = true
                 mInterstitialAd = InterstitialAd(
@@ -38,22 +38,22 @@ class FbInterstitialAds(activity: Activity) {
                             .withAdListener(object : InterstitialAdListener {
                                 override fun onInterstitialDisplayed(ad: Ad) {
                                     // Interstitial ad displayed callback
-                                    fbInterstitialOnCallBack?.onInterstitialDisplayed()
+                                    mListener.onInterstitialDisplayed()
                                     Log.d(AD_TAG, "FB Interstitial ad displayed.")
                                 }
 
                                 override fun onInterstitialDismissed(ad: Ad) {
                                     // Interstitial dismissed callback
                                     isLoadingAd = false
-                                    fbInterstitialOnCallBack?.onInterstitialDismissed()
+                                    mInterstitialAd = null
+                                    mListener.onInterstitialDismissed()
                                     Log.d(AD_TAG, "FB Interstitial ad dismissed.")
-                                    mInterstitialAd?.loadAd()
                                 }
 
                                 override fun onError(ad: Ad, adError: AdError) {
                                     // Ad error callback
                                     isLoadingAd = false
-                                    fbInterstitialOnCallBack?.onError()
+                                    mListener.onError(adError.errorMessage)
                                     mInterstitialAd = null
                                     Log.e(AD_TAG, "FB Interstitial ad failed to load: " + adError.errorMessage)
                                 }
@@ -61,19 +61,19 @@ class FbInterstitialAds(activity: Activity) {
                                 override fun onAdLoaded(ad: Ad) {
                                     // Interstitial ad is loaded and ready to be displayed
                                     isLoadingAd = false
-                                    fbInterstitialOnCallBack?.onAdLoaded()
+                                    mListener.onAdLoaded()
                                     Log.d(AD_TAG, "FB Interstitial ad is loaded and ready to be displayed!")
                                 }
 
                                 override fun onAdClicked(ad: Ad) {
                                     // Ad clicked callback
-                                    fbInterstitialOnCallBack?.onAdClicked()
+                                    mListener.onAdClicked()
                                     Log.d(AD_TAG, "FB Interstitial ad clicked!")
                                 }
 
                                 override fun onLoggingImpression(ad: Ad) {
                                     // Ad impression logged callback
-                                    fbInterstitialOnCallBack?.onLoggingImpression()
+                                    mListener.onLoggingImpression()
                                     Log.d(AD_TAG, "FB Interstitial ad impression logged!")
                                 }
                             })
@@ -82,6 +82,81 @@ class FbInterstitialAds(activity: Activity) {
                 }
 
             }
+        }else{
+            Log.e(AD_TAG, "Internet not Connected or App is Purchased or ad is not active from Firebase")
+            mListener.onError("Internet not Connected or App is Purchased or ad is not active from Firebase")
+        }
+
+    }
+
+    // load show and load strategy
+    fun loadAndLoadInterstitialAd(
+        fbInterstitialIds: String,
+        isAdActive: Boolean,
+        isAppPurchased: Boolean,
+        isInternetConnected:Boolean,
+        mListener: FbInterstitialOnCallBack
+    ) {
+        if (isInternetConnected && !isAppPurchased && isAdActive) {
+            if (mInterstitialAd == null && !isLoadingAd) {
+                isLoadingAd = true
+                mInterstitialAd = InterstitialAd(
+                    mActivity,
+                    fbInterstitialIds
+                )
+                mInterstitialAd?.let{
+                    it.loadAd(
+                        it.buildLoadAdConfig()
+                            .withAdListener(object : InterstitialAdListener {
+                                override fun onInterstitialDisplayed(ad: Ad) {
+                                    // Interstitial ad displayed callback
+                                    mListener.onInterstitialDisplayed()
+                                    Log.d(AD_TAG, "FB Interstitial ad displayed.")
+                                }
+
+                                override fun onInterstitialDismissed(ad: Ad) {
+                                    // Interstitial dismissed callback
+                                    isLoadingAd = false
+                                    mListener.onInterstitialDismissed()
+                                    Log.d(AD_TAG, "FB Interstitial ad dismissed.")
+                                    mInterstitialAd?.loadAd()
+                                }
+
+                                override fun onError(ad: Ad, adError: AdError) {
+                                    // Ad error callback
+                                    isLoadingAd = false
+                                    mListener.onError(adError.errorMessage)
+                                    mInterstitialAd = null
+                                    Log.e(AD_TAG, "FB Interstitial ad failed to load: " + adError.errorMessage)
+                                }
+
+                                override fun onAdLoaded(ad: Ad) {
+                                    // Interstitial ad is loaded and ready to be displayed
+                                    isLoadingAd = false
+                                    mListener.onAdLoaded()
+                                    Log.d(AD_TAG, "FB Interstitial ad is loaded and ready to be displayed!")
+                                }
+
+                                override fun onAdClicked(ad: Ad) {
+                                    // Ad clicked callback
+                                    mListener.onAdClicked()
+                                    Log.d(AD_TAG, "FB Interstitial ad clicked!")
+                                }
+
+                                override fun onLoggingImpression(ad: Ad) {
+                                    // Ad impression logged callback
+                                    mListener.onLoggingImpression()
+                                    Log.d(AD_TAG, "FB Interstitial ad impression logged!")
+                                }
+                            })
+                            .build()
+                    )
+                }
+
+            }
+        }else{
+            Log.e(AD_TAG, "Internet not Connected or App is Purchased or ad is not active from Firebase")
+            mListener.onError("Internet not Connected or App is Purchased or ad is not active from Firebase")
         }
 
     }
@@ -89,6 +164,11 @@ class FbInterstitialAds(activity: Activity) {
     fun destroyInterstitialAds(){
         mInterstitialAd?.destroy()
     }
+
+    fun dismissInterstitialLoaded(){
+        mInterstitialAd = null
+    }
+
 
     fun showInterstitialAds(){
         mInterstitialAd?.let {

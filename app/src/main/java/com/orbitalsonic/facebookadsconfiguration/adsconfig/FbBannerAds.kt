@@ -11,63 +11,54 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.facebook.ads.*
-import com.orbitalsonic.facebookadsconfiguration.GeneralUtils.AD_TAG
-import com.orbitalsonic.facebookadsconfiguration.GeneralUtils.isInternetConnected
+import com.orbitalsonic.facebookadsconfiguration.utils.GeneralUtils.AD_TAG
 import com.orbitalsonic.facebookadsconfiguration.R
 import com.orbitalsonic.facebookadsconfiguration.adsconfig.callbacks.FbBannerCallBack
 import com.orbitalsonic.facebookadsconfiguration.adsconfig.callbacks.FbNativeCallBack
 
 
-class FbBannerAds(activity: Activity) {
+class FbBannerAds(private val mActivity: Activity) {
 
     private var adViewBanner: AdView? = null
-    private val mActivity: Activity = activity
     private var nativeMedium: NativeAd? = null
     private var nativeSmall: NativeBannerAd? = null
-    private var fbBannerCallBack: FbBannerCallBack? = null
-    private var fbNativeCallBack: FbNativeCallBack? = null
 
-    init {
-        AudienceNetworkAds.initialize(activity)
-    }
 
     fun loadBannerAds(
-        adsContainerLayout: LinearLayout,
-        adsHolder: LinearLayout,
-        shimmerFrameLayout: FrameLayout,
+        adsPlaceHolder:FrameLayout,
         fbBannerIds: String,
-        isRemoteConfigActive: Boolean,
+        isAdActive: Boolean,
         isAppPurchased: Boolean,
+        isInternetConnected:Boolean,
         mListener: FbBannerCallBack
     ) {
-        fbBannerCallBack = mListener
-        if (isInternetConnected(mActivity) && !isAppPurchased && isRemoteConfigActive) {
-            adViewBanner = AdView(mActivity, fbBannerIds, AdSize.BANNER_HEIGHT_90)
+        if (isInternetConnected && !isAppPurchased && isAdActive) {
+            adsPlaceHolder.visibility = View.VISIBLE
+            adViewBanner = AdView(mActivity, fbBannerIds, AdSize.BANNER_HEIGHT_50)
             adViewBanner?.let {
-                adsHolder.addView(it)
-                it.loadAd()
+                adsPlaceHolder.removeAllViews()
+                adsPlaceHolder.addView(it)
                 it.loadAd(it.buildLoadAdConfig().withAdListener(object : AdListener {
 
                     override fun onError(p0: Ad?, p1: AdError?) {
-                        Log.i(AD_TAG, "FB Banner onError")
-                        fbBannerCallBack?.onError(p1?.errorMessage.toString())
-                        adsContainerLayout.visibility = View.GONE
+                        Log.e(AD_TAG, "FB Banner onError")
+                        mListener.onError(p1?.errorMessage.toString())
+                        adsPlaceHolder.visibility = View.GONE
                     }
 
                     override fun onAdLoaded(p0: Ad?) {
-                        Log.i(AD_TAG, "FB Banner onAdLoaded")
-                        shimmerFrameLayout.visibility = View.GONE
-                        fbBannerCallBack?.onAdLoaded()
+                        Log.d(AD_TAG, "FB Banner onAdLoaded")
+                        mListener.onAdLoaded()
                     }
 
                     override fun onAdClicked(p0: Ad?) {
-                        Log.i(AD_TAG, "FB Banner onAdClicked")
-                        fbBannerCallBack?.onAdClicked()
+                        Log.d(AD_TAG, "FB Banner onAdClicked")
+                        mListener.onAdClicked()
                     }
 
                     override fun onLoggingImpression(p0: Ad?) {
-                        Log.i(AD_TAG, "FB Banner onLoggingImpression")
-                        fbBannerCallBack?.onLoggingImpression()
+                        Log.d(AD_TAG, "FB Banner onLoggingImpression")
+                        mListener.onLoggingImpression()
                     }
 
                 }).build())
@@ -75,7 +66,9 @@ class FbBannerAds(activity: Activity) {
             }
 
         } else {
-            adsContainerLayout.visibility = View.GONE
+            adsPlaceHolder.visibility = View.GONE
+            Log.e(AD_TAG, "Internet not Connected or App is Purchased or ad is not active from Firebase")
+            mListener.onError("Internet not Connected or App is Purchased or ad is not active from Firebase")
         }
 
     }
@@ -85,51 +78,48 @@ class FbBannerAds(activity: Activity) {
     }
 
     fun loadNativeMedium(
-        adsContainerLayout: LinearLayout,
-        nativeAdLayout: NativeAdLayout,
-        shimmerFrameLayout: FrameLayout,
+        adsPlaceHolder:FrameLayout,
         fbNativeMediumIds: String,
-        isRemoteConfigActive: Boolean,
+        isAdActive: Boolean,
         isAppPurchased: Boolean,
+        isInternetConnected:Boolean,
         mListener: FbNativeCallBack
     ) {
-        fbNativeCallBack = mListener
-
-        if (isInternetConnected(mActivity) && !isAppPurchased && isRemoteConfigActive) {
+        if (isInternetConnected && !isAppPurchased && isAdActive) {
+            adsPlaceHolder.visibility = View.VISIBLE
             nativeMedium = NativeAd(mActivity, fbNativeMediumIds)
             nativeMedium?.let {
                 it.loadAd(
                     it.buildLoadAdConfig()
                         .withAdListener(object : NativeAdListener {
                             override fun onMediaDownloaded(ad: Ad) {
-                                fbNativeCallBack?.onMediaDownloaded()
-                                Log.e(AD_TAG, "FB Native ad finished downloading all assets.")
+                                mListener.onMediaDownloaded()
+                                Log.d(AD_TAG, "FB Native ad finished downloading all assets.")
                             }
 
                             override fun onError(ad: Ad, adError: AdError) {
-                                adsContainerLayout.visibility = View.GONE
-                                fbNativeCallBack?.onError(adError.errorMessage)
+                                adsPlaceHolder.visibility = View.GONE
+                                mListener.onError(adError.errorMessage)
                                 Log.e(AD_TAG, "FB Native ad failed to load: " + adError.errorMessage)
                             }
 
                             override fun onAdLoaded(ad: Ad) {
-                                shimmerFrameLayout.visibility = View.GONE
-                                fbNativeCallBack?.onAdLoaded()
+                                mListener.onAdLoaded()
                                 Log.d(AD_TAG, "FB Native ad is loaded and ready to be displayed!")
                                 if (nativeMedium != ad) {
                                     return
                                 }
                                 // Inflate Native Ad into Container
-                                inflateNativeMedium(it, nativeAdLayout)
+                                inflateNativeMedium(it, adsPlaceHolder)
                             }
 
                             override fun onAdClicked(ad: Ad) {
-                                fbNativeCallBack?.onAdClicked()
+                                mListener.onAdClicked()
                                 Log.d(AD_TAG, "FB Native ad clicked!")
                             }
 
                             override fun onLoggingImpression(ad: Ad) {
-                                fbNativeCallBack?.onLoggingImpression()
+                                mListener.onLoggingImpression()
                                 Log.d(AD_TAG, "FB Native ad impression logged!")
                             }
                         })
@@ -138,58 +128,59 @@ class FbBannerAds(activity: Activity) {
             }
 
         } else {
-            adsContainerLayout.visibility = View.GONE
+            adsPlaceHolder.visibility = View.GONE
+            Log.e(AD_TAG, "Internet not Connected or App is Purchased or ad is not active from Firebase")
+            mListener.onError("Internet not Connected or App is Purchased or ad is not active from Firebase")
+
         }
 
 
     }
 
     fun loadNativeSmallAd(
-        adsContainerLayout: LinearLayout,
-        nativeAdLayout: NativeAdLayout,
-        shimmerFrameLayout: FrameLayout,
+        adsPlaceHolder:FrameLayout,
         fbNativeSmallIds: String,
-        isRemoteConfigActive: Boolean,
+        isAdActive: Boolean,
         isAppPurchased: Boolean,
+        isInternetConnected:Boolean,
         mListener: FbNativeCallBack
     ) {
-        fbNativeCallBack = mListener
 
-        if (isInternetConnected(mActivity) && !isAppPurchased && isRemoteConfigActive) {
+        if (isInternetConnected && !isAppPurchased && isAdActive) {
+            adsPlaceHolder.visibility = View.VISIBLE
             nativeSmall = NativeBannerAd(mActivity, fbNativeSmallIds)
             nativeSmall?.let {
                 it.loadAd(
                     it.buildLoadAdConfig()
                         .withAdListener(object : NativeAdListener {
                             override fun onMediaDownloaded(ad: Ad) {
-                                fbNativeCallBack?.onMediaDownloaded()
-                                Log.e(AD_TAG, "FB Native ad finished downloading all assets.")
+                                mListener.onMediaDownloaded()
+                                Log.d(AD_TAG, "FB Native ad finished downloading all assets.")
                             }
 
                             override fun onError(ad: Ad, adError: AdError) {
-                                adsContainerLayout.visibility = View.GONE
-                                fbNativeCallBack?.onError(adError.errorMessage)
+                                adsPlaceHolder.visibility = View.VISIBLE
+                                mListener.onError(adError.errorMessage)
                                 Log.e(AD_TAG, "FB Native ad failed to load: " + adError.errorMessage)
                             }
 
                             override fun onAdLoaded(ad: Ad) {
-                                shimmerFrameLayout.visibility = View.GONE
-                                fbNativeCallBack?.onAdLoaded()
+                                mListener.onAdLoaded()
                                 Log.d(AD_TAG, "FB Native ad is loaded and ready to be displayed!")
                                 if (nativeSmall != ad) {
                                     return
                                 }
                                 // Inflate Native Ad into Container
-                                inflateNativeSmall(it, nativeAdLayout)
+                                inflateNativeSmall(it, adsPlaceHolder)
                             }
 
                             override fun onAdClicked(ad: Ad) {
-                                fbNativeCallBack?.onAdClicked()
+                                mListener.onAdClicked()
                                 Log.d(AD_TAG, "FB Native ad clicked!")
                             }
 
                             override fun onLoggingImpression(ad: Ad) {
-                                fbNativeCallBack?.onLoggingImpression()
+                                mListener.onLoggingImpression()
                                 Log.d(AD_TAG, "FB Native ad impression logged!")
                             }
                         })
@@ -198,23 +189,30 @@ class FbBannerAds(activity: Activity) {
             }
 
         } else {
-            adsContainerLayout.visibility = View.GONE
+            adsPlaceHolder.visibility = View.GONE
+            Log.e(AD_TAG, "Internet not Connected or App is Purchased or ad is not active from Firebase")
+            mListener.onError("Internet not Connected or App is Purchased or ad is not active from Firebase")
+
         }
 
     }
 
-    private fun inflateNativeMedium(nativeAd: NativeAd, nativeAdLayout: NativeAdLayout) {
+    private fun inflateNativeMedium(nativeAd: NativeAd, fbNativeContainer: FrameLayout) {
         nativeAd.unregisterView()
 
         // Add the Ad view into the ad container.
         val inflater = LayoutInflater.from(mActivity)
+
+        val adView =  NativeAdLayout(mActivity)
+
         // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
         val adViewNativeM: ConstraintLayout =
-            inflater.inflate(R.layout.fb_native_medium, nativeAdLayout, false) as ConstraintLayout
-        nativeAdLayout.addView(adViewNativeM)
+            inflater.inflate(R.layout.fb_native_medium, adView, false) as ConstraintLayout
+        fbNativeContainer.removeAllViews()
+        fbNativeContainer.addView(adViewNativeM)
         // Add the AdOptionsView
         val adChoicesContainer: LinearLayout = adViewNativeM.findViewById(R.id.ad_choices_container)
-        val adOptionsView = AdOptionsView(mActivity, nativeAd, nativeAdLayout)
+        val adOptionsView = AdOptionsView(mActivity, nativeAd, adView)
         adChoicesContainer.removeAllViews()
         adChoicesContainer.addView(adOptionsView, 0)
 
@@ -249,23 +247,26 @@ class FbBannerAds(activity: Activity) {
 
     }
 
-    private fun inflateNativeSmall(nativeBannerAd: NativeBannerAd, nativeAdLayout: NativeAdLayout) {
+    private fun inflateNativeSmall(nativeBannerAd: NativeBannerAd, fbNativeContainer: FrameLayout) {
         // Unregister last ad
         nativeBannerAd.unregisterView()
 
         // Add the Ad view into the ad container.
         // Add the Ad view into the ad container.
         val inflater = LayoutInflater.from(mActivity)
+
+        val adView =  NativeAdLayout(mActivity)
         // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
         val adViewNativeB: ConstraintLayout =
-            inflater.inflate(R.layout.fb_native_small, nativeAdLayout, false) as ConstraintLayout
-        nativeAdLayout.addView(adViewNativeB)
+            inflater.inflate(R.layout.fb_native_small, adView, false) as ConstraintLayout
+        fbNativeContainer.removeAllViews()
+        fbNativeContainer.addView(adViewNativeB)
 
         // Add the AdChoices icon
         val adChoicesContainer: LinearLayout =
             adViewNativeB.findViewById(R.id.ad_choices_container)
         val adOptionsView =
-            AdOptionsView(mActivity, nativeBannerAd, nativeAdLayout)
+            AdOptionsView(mActivity, nativeBannerAd, adView)
         adChoicesContainer.removeAllViews()
         adChoicesContainer.addView(adOptionsView, 0)
 

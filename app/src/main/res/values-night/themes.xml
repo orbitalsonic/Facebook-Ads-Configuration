@@ -14,6 +14,15 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="Theme.FacebookAdsConfiguration.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="FullScreen" parent="Theme.FacebookAdsConfiguration.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
     <style name="AdsButtonShapeAppearance">
         <item name="cornerSizeTopLeft">30dp</item>
         <item name="cornerSizeTopRight">30dp</item>
