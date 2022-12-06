@@ -159,7 +159,7 @@ class FbBannerAds(private val mActivity: Activity) {
                             }
 
                             override fun onError(ad: Ad, adError: AdError) {
-                                adsPlaceHolder.visibility = View.VISIBLE
+                                adsPlaceHolder.visibility = View.GONE
                                 mListener.onError(adError.errorMessage)
                                 Log.e(AD_TAG, "FB Native ad failed to load: " + adError.errorMessage)
                             }
