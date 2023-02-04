@@ -36,8 +36,6 @@ class FbBannerAds(private val mActivity: Activity) {
             adsPlaceHolder.visibility = View.VISIBLE
             adViewBanner = AdView(mActivity, fbBannerIds, AdSize.BANNER_HEIGHT_50)
             adViewBanner?.let {
-                adsPlaceHolder.removeAllViews()
-                adsPlaceHolder.addView(it)
                 it.loadAd(it.buildLoadAdConfig().withAdListener(object : AdListener {
 
                     override fun onError(p0: Ad?, p1: AdError?) {
@@ -48,6 +46,7 @@ class FbBannerAds(private val mActivity: Activity) {
 
                     override fun onAdLoaded(p0: Ad?) {
                         Log.d(AD_TAG, "FB Banner onAdLoaded")
+                        displayBannerAd(adsPlaceHolder)
                         mListener.onAdLoaded()
                     }
 
@@ -69,6 +68,21 @@ class FbBannerAds(private val mActivity: Activity) {
             adsPlaceHolder.visibility = View.GONE
             Log.e(AD_TAG, "Internet not Connected or App is Purchased or ad is not active from Firebase")
             mListener.onError("Internet not Connected or App is Purchased or ad is not active from Firebase")
+        }
+
+    }
+
+    private fun displayBannerAd(adsPlaceHolder: FrameLayout) {
+        try {
+            if (adViewBanner != null) {
+                adsPlaceHolder.removeAllViews()
+                adsPlaceHolder.addView(adViewBanner)
+            } else {
+                adsPlaceHolder.removeAllViews()
+                adsPlaceHolder.visibility = View.GONE
+            }
+        } catch (ex: Exception) {
+            Log.e(AD_TAG, "inflateBannerAd: ${ex.message}")
         }
 
     }
