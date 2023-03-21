@@ -6,4 +6,5 @@ interface FbNativeCallBack {
     fun onAdClicked()
     fun onLoggingImpression()
     fun onMediaDownloaded()
+    fun onPreloaded()
 }

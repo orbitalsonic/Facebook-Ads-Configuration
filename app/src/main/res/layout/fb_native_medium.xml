@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_ad_outline_shape"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/bg_ad_outline_shape">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -70,8 +69,8 @@
                 android:lines="1"
                 android:focusable="true"
                 android:gravity="center"
-                android:text="Facebook Advertiser Facebook Advertiser Facebook Advertiser "
-                android:textColor="@color/white"
+                tools:text="Facebook Advertiser Facebook Advertiser Facebook Advertiser "
+                android:textColor="@color/black"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constrainedWidth="true"
@@ -98,10 +97,10 @@
                 android:enabled="false"
                 android:maxLength="90"
                 android:maxLines="2"
-                android:text="Sponsored"
+                tools:text="Sponsored"
                 android:ellipsize="end"
                 android:lines="1"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/black"
                 android:textSize="12sp"
                 app:layout_constrainedHeight="true"
                 app:layout_constrainedWidth="true"
@@ -154,8 +153,8 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lines="1"
-                android:text="Get it on Google Play"
-                android:textColor="@android:color/darker_gray"
+                tools:text="Get it on Google Play"
+                android:textColor="@color/black"
                 android:textSize="12sp" />
 
             <TextView
@@ -165,17 +164,17 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:lines="2"
-                android:text="Your ad integration works. Woohoo!"
-                android:textColor="@color/white"
+                tools:text="Your ad integration works. Woohoo!"
+                android:textColor="@color/black"
                 android:textSize="12sp" />
 
             <Button
                 android:id="@+id/native_ad_call_to_action"
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
-                style="@style/AdsButtonStyle2"
+                style="@style/AdsButtonStyleMedium"
                 android:lines="1"
-                android:text="Install Now"
+                tools:text="Install Now"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 />

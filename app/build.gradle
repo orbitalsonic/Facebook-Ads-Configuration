@@ -2,26 +2,29 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+    id 'com.google.firebase.crashlytics'
     id 'com.google.gms.google-services'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.orbitalsonic.facebookadsconfiguration"
         minSdk 23
-        targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        targetSdk 33
+        versionCode 105
+        versionName "3.7.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            resValue 'string', 'fb_interstitial_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
-            resValue 'string', 'fb_interstitial_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_inter_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_inter_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
             resValue 'string', 'fb_native_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
             resValue 'string', 'fb_native_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
             resValue 'string', 'fb_banner_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
@@ -32,8 +35,8 @@ android {
         }
 
         debug {
-            resValue 'string', 'fb_interstitial_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
-            resValue 'string', 'fb_interstitial_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_inter_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
+            resValue 'string', 'fb_inter_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
             resValue 'string', 'fb_native_splash_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
             resValue 'string', 'fb_native_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
             resValue 'string', 'fb_banner_main_ids', '"IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"'
@@ -51,20 +54,48 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures{
-        dataBinding = true
+    buildFeatures {
+        dataBinding true
+        viewBinding true
     }
 }
 
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.6.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // SDP layout size && SSP Text sizes
+    implementation 'com.intuit.sdp:sdp-android:1.1.0'
+    implementation 'com.intuit.ssp:ssp-android:1.1.0'
+
+// firebase configuration
+    implementation platform('com.google.firebase:firebase-bom:31.2.3')
+    // Firebase Remote Config (Kotlin)
+    implementation 'com.google.firebase:firebase-config-ktx'
+    // Firebase Analytics (Kotlin)
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    // Firebase Crashlytics (Kotlin)
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+
+    // navigation components
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
+    // View Model
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+
+    // Koin for dependency injection
+    implementation "io.insert-koin:koin-android:3.3.2"
+
+    // required to avoid crash on Android 12 API 31
+    implementation 'androidx.work:work-runtime-ktx:2.8.0'
 
     // facebook mediation
 //    implementation 'com.google.ads.mediation:facebook:6.8.0.0'
@@ -72,11 +103,5 @@ dependencies {
     //facebook ads
     implementation 'com.facebook.android:audience-network-sdk:6.11.0'
 
-    // firebase configuration
-    implementation platform('com.google.firebase:firebase-bom:31.1.0')
-    // Firebase Remote Config (Kotlin)
-    implementation 'com.google.firebase:firebase-config-ktx'
 
-    // required to avoid crash on Android 12 API 31
-    implementation 'androidx.work:work-runtime-ktx:2.7.1'
 }

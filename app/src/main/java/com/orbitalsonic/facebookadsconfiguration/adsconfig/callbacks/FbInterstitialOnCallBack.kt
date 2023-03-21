@@ -7,4 +7,5 @@ interface FbInterstitialOnCallBack {
     fun onAdLoaded()
     fun onAdClicked()
     fun onLoggingImpression()
+    fun onPreloaded()
 }
